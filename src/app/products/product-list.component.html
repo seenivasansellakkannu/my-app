@@ -40,7 +40,7 @@
                         [title]='product.productName'
                         [style.width.px]='imageWidth'
                         [style.margin.px]='imageMargin'></td>
-                    <td>{{product.productName | lowercase}}</td>
+                    <td><a [routerLink]="['/products',product.productId]">{{product.productName | lowercase}}</a></td>
                     <td>{{product.productCost|currency:'USD':'symbol':'1.2-2'}}</td>
                     <td>{{product.available | convertToSpace :'-'}}</td>
                     <td><app-star [rating]='product.rating'

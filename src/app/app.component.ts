@@ -3,11 +3,19 @@ import { Component } from "@angular/core";
 
 @Component({
   selector:'app-root',
-  template:`<div>
-    <h1>{{pageTitle}}</h1>
-<app-products></app-products>
-</div>`
+  template:`
+  <nav class='navbar navbar-expand navbar-light bg-light'>
+    <a class='navbar-brand'>{{pageTitle}}</a>
+    <ul class='nav nav-pill'>
+      <li><a class='nav-link' routerLink='/welcome'>Home</a></li>
+      <li><a class='nav-link' routerLink='/products'>Product List</a></li>
+    </ul>
+  </nav>
+  <div class='container'>
+    <router-outlet></router-outlet>
+  </div>
+  `
 })
 export class AppComponent {
-  pageTitle : string ='MY FIRST ANGULAR';
+  pageTitle : string ='PRODUCT-LIST';
 }

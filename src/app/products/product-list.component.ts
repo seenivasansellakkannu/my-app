@@ -1,19 +1,25 @@
 import { SelectorContext } from "@angular/compiler";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Subscription } from "rxjs";
 import { Iproduct } from "./product";
+import { ProductService } from "./product.service";
 
 @Component({
-  selector:'app-products',
   templateUrl:'./product-list.component.html',
   styleUrls:['./product-list.component.css']
 })
-export class ProductListComponent implements OnInit { 
+export class ProductListComponent implements OnInit, OnDestroy {
+  
+  constructor(private productService : ProductService){
+    
+  } 
   pageTitle:string='Product List';
   imageWidth=40;
   imageMargin=2;
   showImage:boolean=false;
   private _listFilter:string = '';
-  
+  errorMessage='';
+  sub!: Subscription;
   get listFilter():string{
     return this._listFilter;
   }
@@ -23,32 +29,24 @@ export class ProductListComponent implements OnInit {
     this.filteredProducts= this.performFilter(value);
   }
   filteredProducts : Iproduct[]=[];
-  products: Iproduct[]=[
-    {
-      "productId" : 1,
-      "productName" : "IPHONE",
-      "productCost": 5000,
-      "rating":4,
-      "available" : "yes-available",
-      "imageUrl":'assets/images/iphone.png'
-    },
-    {
-      "productId" : 2,
-      "productName" : "PIXEL",
-      "productCost": 4000,
-      "rating":3.5,
-      "available" : "yes-available",
-      "imageUrl":'assets/images/pixel.png'
-    }
-  ];
-
+  products: Iproduct[]=[];
+  
   toggleImage(): void {
     this.showImage = !this.showImage;
   }
+  
+  ngOnDestroy(): void {
+    this.sub.unsubscribe;
+  }
 
   ngOnInit(): void {
-    this._listFilter = 'cart';
-    console.log('ngOnInit');
+    this.sub = this.productService.getProduct().subscribe({
+      next : productss=> {
+        this.products=productss;
+        this.filteredProducts=this.products;
+      },
+      error : err=>this.errorMessage = err
+    });
   }
   performFilter(filterBy : string):Iproduct[]{
     filterBy=filterBy.toLocaleLowerCase();
